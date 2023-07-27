@@ -17,24 +17,20 @@ exports.createCategory = async (req, res, next) => {
 };
 
 exports.updateCategory = async (req, res, next) => {
+  console.log(req.params.categoryId, "category id");
+  console.log(req.body, "req body");
   try {
-    console.log(req.body.subCategoryId, "update called");
-    console.log(req.params.categoryId, " category id");
-
-    const updatedCategoryDataCategory =
-      await Category.Category.findOneAndUpdate(
-        { _id: req.params.categoryId },
-        { $push: { subCategories: req.body.subCategoryId } },
-        {
-          new: true,
-        }
-      );
-
-    console.log(updatedCategoryDataCategory, "update category id data");
-
+    const updatedCategoryData = await Category.Category.findByIdAndUpdate(
+      { _id: req.params.categoryId },
+      req.body,
+      {
+        new: true,
+      }
+    );
+    console.log(updatedCategoryData, "udpate ctegory data");
     res.status(201).json({
-      message: "success fully updated categories",
-      data: updatedCategoryDataCategory,
+      message: "success fully udpated  categories",
+      data: updatedCategoryData,
     });
   } catch (error) {
     console.log("error", error);
@@ -42,11 +38,33 @@ exports.updateCategory = async (req, res, next) => {
 };
 
 exports.getAllCategory = async (req, res, next) => {
-  console.log("get called");
   const data = await Category.Category.find().populate("subCategories");
   res.status(201).json({ message: "success fully get categories", data: data });
   console.log("all items find");
 };
+
+exports.deleteCategory = async (req, res, next) => {
+  console.log(req.params.categoryId, "req params id");
+  try {
+    const deleteCategoryData = await Category.Category.deleteOne(
+      {
+        _id: req.params.categoryId,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(201).json({
+      message: "success fully deleted Category",
+      data: deleteCategoryData,
+    });
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+// for subCategory Section
 
 exports.createSubCategory = async (req, res, next) => {
   try {
@@ -55,6 +73,49 @@ exports.createSubCategory = async (req, res, next) => {
     res.status(201).json({
       message: "success fully create subcategories",
       data: createSubCategoryData,
+    });
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+exports.deleteSubCategory = async (req, res, next) => {
+  console.log(req.params.subCategoryId, "req params id");
+  try {
+    const deleteSubCategoryData = await Category.SubCategory.deleteOne(
+      {
+        _id: req.params.subCategoryId,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(201).json({
+      message: "success fully deleted subcategory",
+      data: deleteSubCategoryData,
+    });
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+exports.updateSubCategory = async (req, res, next) => {
+  try {
+    console.log(req.params.subCategoryId, "sub category data");
+    const udpateSubCategoryData = await Category.SubCategory.findOneAndUpdate(
+      { _id: req.params.subCategoryId },
+      req.body,
+      {
+        new: true,
+      }
+    );
+
+    console.log(udpateSubCategoryData, "udpate subcategory data");
+
+    res.status(201).json({
+      message: "success fully udpated  subcategories",
+      data: udpateSubCategoryData,
     });
   } catch (error) {
     console.log("error", error);
