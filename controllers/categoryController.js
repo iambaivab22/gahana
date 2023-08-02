@@ -64,6 +64,31 @@ exports.deleteCategory = async (req, res, next) => {
   }
 };
 
+exports.addSubCategoryToCategory = async (req, res, next) => {
+  try {
+    console.log(req.body.subCategoryId, "update called");
+    console.log(req.params.categoryId, " category id");
+
+    const updatedCategoryDataCategory =
+      await Category.Category.findOneAndUpdate(
+        { _id: req.params.categoryId },
+        { $push: { subCategories: req.body.subCategoryId } },
+        {
+          new: true,
+        }
+      );
+
+    console.log(updatedCategoryDataCategory, "update category id data");
+
+    res.status(201).json({
+      message: "success fully updated categories",
+      data: updatedCategoryDataCategory,
+    });
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
 // for subCategory Section
 
 exports.createSubCategory = async (req, res, next) => {

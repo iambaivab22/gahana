@@ -1,5 +1,6 @@
 const { File } = require("buffer");
 const mongoose = require("mongoose");
+const { SubCategory } = require("./category.modal");
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -21,6 +22,9 @@ const productSchema = new mongoose.Schema({
     type: Number,
   },
   discountedPrice: {
+    type: Number,
+  },
+  discountPercentage: {
     type: Number,
   },
   // description: {
@@ -91,6 +95,15 @@ const productSchema = new mongoose.Schema({
   //     },
   //   },
   // ],
+
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+  },
+  subCategory: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "SubCategory",
+  },
 });
 
 module.exports = mongoose.model("Product", productSchema);

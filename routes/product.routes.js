@@ -5,6 +5,8 @@ const upload = require("../handlers/multer.handler");
 const {
   getAllProduct,
   createProduct,
+  deleteProduct,
+  updateProduct,
 } = require("../controllers/product.controller");
 const cpUpload = upload.fields([
   { name: "image", maxCount: 3 },
@@ -13,4 +15,7 @@ const cpUpload = upload.fields([
 
 router.route("/product").get(getAllProduct);
 router.route("/product/new").post(cpUpload, createProduct);
+router.patch("/product/:productId", cpUpload, updateProduct);
+router.delete("/product/:productId", deleteProduct);
+
 module.exports = router;
