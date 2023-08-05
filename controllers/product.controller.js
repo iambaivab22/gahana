@@ -65,12 +65,51 @@ exports.createProduct = async (req, res, next) => {
 };
 
 exports.getAllProduct = async (req, res, next) => {
-  const data = await Product.find()
-    .populate("category")
-    .populate("subCategory");
-  res.status(201).json({ message: "success fully get products", data: data });
-  console.log("all items find");
+  const { search, sort, minPrice, maxPrice } = req.query;
+  try {
+    let query = {};
+    // Search products by name if a search query is provided
+    if (search) {
+      query.name = { $regex: search, $options: "i" };
+    }
+    // Filter products by price range if minPrice and maxPrice are provided
+    if (minPrice && maxPrice) {
+      query.price = { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) };
+    } else if (minPrice) {
+      query.price = { $gte: parseInt(minPrice) };
+    } else if (maxPrice) {
+      query.price = { $lte: parseInt(maxPrice) };
+    }
+
+    // Sort products by price if a sort query is provided
+    let sortOption = {};
+    if (sort === "asc") {
+      sortOption.price = 1;
+    } else if (sort === "desc") {
+      sortOption.price = -1;
+    }
+
+    const products = await Product.find(query)
+      .populate("category")
+      .populate("subCategory")
+      .sort(sortOption);
+
+    res
+      .status(201)
+      .json({ message: "success fully get products", data: products });
+    console.log("all items find");
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching products" });
+  }
 };
+
+// exports.getAllProduct = async (req, res, next) => {
+//   const data = await Product.find()
+//     .populate("category")
+//     .populate("subCategory");
+//   res.status(201).json({ message: "success fully get products", data: data });
+//   console.log("all items find");
+// };
 
 exports.deleteProduct = async (req, res, next) => {
   console.log(req.params.productId, "req params id");
@@ -144,10 +183,52 @@ exports.updateProduct = async (req, res, next) => {
     );
     console.log(updatedProductData, "udpated Product data");
     res.status(201).json({
-      message: "success fully udpated  Product",
+      message: "success fully udpated Product",
       data: updatedProductData,
     });
   } catch (error) {
     console.log("error", error);
+  }
+};
+
+exports.getProductDetailsById = async (req, res, next) => {
+  try {
+    const productId = req.params.productId;
+    const productDetails = await Product.findById(productId);
+
+    if (!productDetails) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    res.status(201).json({
+      message: "successfully get Product Details",
+      data: productDetails,
+    });
+  } catch (error) {
+    console.log(error, "error");
+  }
+};
+
+exports.productListByCategory = async (req, res, next) => {
+  try {
+    const categoryId = req.params.categoryId;
+    const productListByCategory = await Product.find({
+      category: categoryId,
+    });
+
+    console.log(productListByCategory, "rpoduct list by category");
+
+    if (!productListByCategory) {
+      return res
+        .status(404)
+        .json({ error: "Product not found for this category" });
+    }
+
+    res.status(201).json({
+      message: "successfully get Products",
+      data: productListByCategory,
+    });
+  } catch (error) {
+    console.log(error, "error");
   }
 };
