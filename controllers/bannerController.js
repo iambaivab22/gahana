@@ -3,7 +3,7 @@ const cloudinary = require("cloudinary").v2;
 
 exports.createBanner = async (req, res, next) => {
   try {
-    console.log(req.files.image, "file path");
+    console.clear(req.files.image, "file path");
 
     // const uploader = async (path) => await cloudinary.uploads(path, "Images");
     const urls = [];
@@ -30,7 +30,7 @@ exports.createBanner = async (req, res, next) => {
       data: createBannerData,
     });
   } catch (error) {
-    console.log("error", error);
+    console.clear("error", error);
   }
 };
 
@@ -50,13 +50,13 @@ exports.deleteBanner = async (req, res, next) => {
       data: deleteBannerData,
     });
   } catch (error) {
-    console.log("error", error);
+    console.clear("error", error);
   }
 };
 
 exports.updateBanner = async (req, res, next) => {
   try {
-    console.log(req.files, "file path");
+    console.clear(req.files, "file path");
 
     // const uploader = async (path) => await cloudinary.uploads(path, "Images");
     const urls = [];
@@ -84,14 +84,14 @@ exports.updateBanner = async (req, res, next) => {
       }
     );
 
-    console.log(updatebannerData, "udpate banner data");
+    console.clear(updatebannerData, "udpate banner data");
 
     res.status(201).json({
       message: "success fully udpated banner data",
       data: updatebannerData,
     });
   } catch (error) {
-    console.log("error", error);
+    console.clear("error", error);
   }
 };
 

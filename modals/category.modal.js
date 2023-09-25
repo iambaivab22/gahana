@@ -21,5 +21,22 @@ const subCategorySchema = new mongoose.Schema({
     index: true,
   },
 });
+
+categorySchema.set("toJSON", {
+  transform: function (doc, ret) {
+    // Map the '_id' field to 'id'
+    ret.id = ret._id;
+    delete ret._id;
+  },
+});
+
+subCategorySchema.set("toJSON", {
+  transform: function (doc, ret) {
+    // Map the '_id' field to 'id'
+    ret.id = ret._id;
+    delete ret._id;
+  },
+});
+
 exports.Category = mongoose.model("Category", categorySchema);
 exports.SubCategory = mongoose.model("SubCategory", subCategorySchema);

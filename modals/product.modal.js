@@ -1,18 +1,25 @@
 const { File } = require("buffer");
 const mongoose = require("mongoose");
 const { SubCategory } = require("./category.modal");
+const { Schema, Document, Types } = require("mongoose");
 
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
   },
+
   price: {
     type: Number,
   },
   image: {
     // data: Buffer,
     // contentType: String,
-    type: [String],
+    type: [
+      {
+        id: Types.ObjectId,
+        url: String,
+      },
+    ],
   },
 
   video: {
@@ -103,6 +110,14 @@ const productSchema = new mongoose.Schema({
   subCategory: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "SubCategory",
+  },
+});
+
+productSchema.set("toJSON", {
+  transform: function (doc, ret) {
+    // Map the '_id' field to 'id'
+    ret.id = ret._id;
+    delete ret._id;
   },
 });
 

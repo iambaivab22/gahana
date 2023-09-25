@@ -9,6 +9,7 @@ const {
   updateProduct,
   getProductDetailsById,
   productListByCategory,
+  deleteProductImages,
 } = require("../controllers/product.controller");
 const cpUpload = upload.fields([
   { name: "image", maxCount: 3 },
@@ -19,6 +20,7 @@ router.route("/product").get(getAllProduct);
 router.route("/product/new").post(cpUpload, createProduct);
 router.patch("/product/:productId", cpUpload, updateProduct);
 router.delete("/product/:productId", deleteProduct);
+router.delete("/product/:productId/:imroageId", deleteProductImages);
 router.get("/product/:productId", getProductDetailsById);
 router.get("/product/category/:categoryId", productListByCategory);
 
