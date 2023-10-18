@@ -8,6 +8,10 @@ const productSchema = new mongoose.Schema({
     type: String,
   },
 
+  details: {
+    type: String,
+  },
+
   price: {
     type: Number,
   },
@@ -25,6 +29,7 @@ const productSchema = new mongoose.Schema({
   video: {
     type: String,
   },
+
   originalPrice: {
     type: Number,
   },

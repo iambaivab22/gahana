@@ -7,94 +7,40 @@ cloudinary.config({
   api_secret: "KNvSA3_VXBB7zwSgMCR8QUM1BOM",
 });
 
-// exports.createProduct = async (req, res, next) => {
-//   console.clear();
-//   console.clear(req.body, "create req");
-//   console.log(req.body);
-//   try {
-//     // const uploader = async (path) => await cloudinary.uploads(path, "Images");
-//     const urls = [];
-//     let videoUrl;
-
-//     req.files.image.map(async (item, index) => {
-//       const { path } = item;
-//       const newPath = await cloudinary.uploader.upload(
-//         path,
-//         // { public_id: "" },
-//         { resource_type: "auto" },
-//         function (error, result) {
-//           if (result) {
-//             console.log(result, "results");
-//             urls.push({ url: result.secure_url });
-//           }
-//         }
-//       );
-//     });
-
-//     const oldPath = await cloudinary.uploader.upload(
-//       req.files.video[0].path,
-//       // { public_id: "" },
-//       { resource_type: "auto" },
-//       function (error, result) {
-//         if (result) {
-//           videoUrl = result.secure_url;
-//         }
-//       }
-//     );
-
-//     const newProduct = new Product({
-//       name: req.body.name,
-//       price: req.body.price,
-//       image: urls,
-//       video: videoUrl,
-//       originalPrice: req.body.originalPrice,
-//       discountedPrice: req.body.discountedPrice,
-//       category: req.body.category,
-//       subCategory: req.body.subCategory,
-//       discountPercentage: req.body.discountPercentage,
-//     });
-
-//     // res.json({ success: "success" });
-
-//     newProduct.save().then((prod) => {
-//       console.clear(prod, "production");
-//       res.json(prod);
-//     });
-//   } catch (error) {
-//     return next(error);
-//   }
-// };
-
 exports.createProduct = async (req, res, next) => {
-  console.clear();
-  console.clear(req.body, "create req");
-  console.log(req.body);
 
   try {
+    // const uploader = async (path) => await cloudinary.uploads(path, "Images");
     const urls = [];
     let videoUrl;
+console.log(req.files.video[0],"req files video");
 
-    // Use Promise.all to await all the uploads
-    await Promise.all(
-      req.files.image.map(async (item, index) => {
-        const { path } = item;
-        const newPath = await cloudinary.uploader.upload(
-          path,
-          { resource_type: "auto" } // Assuming you want to auto-detect resource type
-        );
+    req?.files?.image.map(async (item, index) => {
+      const { path } = item;
 
-        console.log(newPath, "results");
-        urls.push({ url: newPath.secure_url });
-      })
+      const newPath = await cloudinary.uploader.upload(
+        path,
+        // { public_id: "" },
+        { resource_type: "auto" },
+        function (error, result) {
+          if (result) {
+            console.log(result, "results");
+            urls.push({ url: result.secure_url });
+          }
+        }
+      );
+    });
+
+    const oldPath = await cloudinary.uploader.upload(
+      req?.files?.video[0].path,
+      // { public_id: "" },
+      { resource_type: "auto" },
+      function (error, result) {
+        if (result) {
+          videoUrl = result.secure_url;
+        }
+      }
     );
-
-    const videoPath = req.files.video[0].path;
-    const videoResult = await cloudinary.uploader.upload(
-      videoPath,
-      { resource_type: "auto" } // Assuming you want to auto-detect resource type
-    );
-
-    videoUrl = videoResult.secure_url;
 
     const newProduct = new Product({
       name: req.body.name,
@@ -106,12 +52,15 @@ exports.createProduct = async (req, res, next) => {
       category: req.body.category,
       subCategory: req.body.subCategory,
       discountPercentage: req.body.discountPercentage,
+      details: req.body.details,
     });
 
-    // Save the product and respond with the saved product
-    const prod = await newProduct.save();
-    console.clear(prod, "production");
-    res.json(prod);
+    // res.json({ success: "success" });
+
+    newProduct.save().then((prod) => {
+      console.log(prod, "production");
+      res.json(prod);
+    });
   } catch (error) {
     return next(error);
   }
@@ -149,7 +98,7 @@ exports.getAllProduct = async (req, res, next) => {
     res
       .status(201)
       .json({ message: "success fully get products", data: products });
-    // console.clear("all items find");
+    // console.log("all items find");
   } catch (err) {
     res.status(500).json({ error: "Error fetching products" });
   }
@@ -160,24 +109,24 @@ exports.getAllProduct = async (req, res, next) => {
 //     .populate("category")
 //     .populate("subCategory");
 //   res.status(201).json({ message: "success fully get products", data: data });
-//   console.clear("all items find");
+//   console.log("all items find");
 // };
 
 exports.deleteProduct = async (req, res, next) => {
-  console.clear(req.params.productId, "req params id");
+  console.log(req.params.productId, "req params id");
   try {
     const deleteProductData = await Product.findByIdAndRemove(
       req.params.productId
     );
 
-    // console.clear(deleteProductData, "deleteproduct data");
+    // console.log(deleteProductData, "deleteproduct data");
 
     res.status(201).json({
       message: "success fully deleted Product",
       data: deleteProductData,
     });
   } catch (error) {
-    console.clear("error", error);
+    console.log("error", error);
   }
 };
 
@@ -223,8 +172,8 @@ exports.deleteProductImages = async (req, res, next) => {
 };
 
 exports.updateProduct = async (req, res, next) => {
-  // console.clear(req.params.productId, "product id");
-  // console.clear(req.body, "req body");
+  // console.log(req.params.productId, "product id");
+  // console.log(req.body, "req body");
   try {
     const urls = [];
     let videoUrl;
@@ -237,6 +186,7 @@ exports.updateProduct = async (req, res, next) => {
           { resource_type: "auto" } // Assuming you want to auto-detect resource type
         );
 
+        console.log(newPath, "results");
         urls.push({ url: newPath.secure_url });
       })
     );
@@ -254,6 +204,8 @@ exports.updateProduct = async (req, res, next) => {
       );
     }
 
+    // console.log(urls, videoUrl, "image and video url");
+
     const product = await Product.findOne({ _id: req.params.productId });
 
     if (!product) {
@@ -262,11 +214,11 @@ exports.updateProduct = async (req, res, next) => {
 
     // Append the new images to the existing ones
     let newImages = product.image;
-    console.clear(urls, "urls");
-    console.clear(newImages, "newImages");
+    console.log(urls, "urls");
+    console.log(newImages, "newImages");
 
     let updatedData = [...newImages, ...urls];
-    console.clear(updatedData, "updatedData");
+    console.log(updatedData, "updatedData");
 
     // Save the updated product to the database
     // await product.save();
@@ -283,18 +235,19 @@ exports.updateProduct = async (req, res, next) => {
         category: req.body.category,
         subCategory: req.body.subCategory,
         discountPercentage: req.body.discountPercentage,
+        details: req.body.details,
       },
       {
         new: true,
       }
     );
-    console.clear(updatedProductData, "udpated Product data");
+    console.log(updatedProductData, "udpated Product data");
     res.status(201).json({
       message: "success fully udpated Product",
       data: updatedProductData,
     });
   } catch (error) {
-    console.clear("error", error);
+    console.log("error", error);
   }
 };
 
@@ -305,7 +258,7 @@ exports.getProductDetailsById = async (req, res, next) => {
       .populate("category")
       .populate("subCategory");
 
-    console.clear(productDetails, "productdetails");
+    console.log(productDetails, "productdetails");
 
     if (!productDetails) {
       return res.status(404).json({ error: "Product not found" });
@@ -316,7 +269,7 @@ exports.getProductDetailsById = async (req, res, next) => {
       data: productDetails,
     });
   } catch (error) {
-    console.clear(error, "error");
+    console.log(error, "error");
   }
 };
 
@@ -327,7 +280,7 @@ exports.productListByCategory = async (req, res, next) => {
       category: categoryId,
     });
 
-    console.clear(productListByCategory, "rpoduct list by category");
+    console.log(productListByCategory, "rpoduct list by category");
 
     if (!productListByCategory) {
       return res
@@ -340,6 +293,6 @@ exports.productListByCategory = async (req, res, next) => {
       data: productListByCategory,
     });
   } catch (error) {
-    console.clear(error, "error");
+    console.log(error, "error");
   }
 };

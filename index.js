@@ -10,7 +10,7 @@ const CategoryRouter = require("./routes/categoryRoutes");
 const bannerRouter = require("./routes/bannerRoutes");
 
 dotenv.config({ path: "./config/config.env" });
-console.clear(process.env.PORT, "port number");
+console.log(process.env.PORT, "port number");
 
 dbconnection();
 app.use(cors());
@@ -26,7 +26,7 @@ app.use("/", (req, res) => {
   res.send("hello world");
 });
 app.listen(process.env.PORT, () => {
-  console.clear(
+  console.log(
     `server initialized successfully in port no ${process.env.PORT} in ${process.env.NODE_ENV}`
   );
 });

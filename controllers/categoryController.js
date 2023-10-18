@@ -6,7 +6,7 @@ exports.createCategory = async (req, res, next) => {
 
     const createCategoryData = await categoryData.save();
     res.status(201).json({
-      message: "success fully get categories",
+      message: "success fully create categories",
       data: createCategoryData,
     });
   } catch (error) {}
@@ -122,4 +122,48 @@ exports.getAllSubCategory = async (req, res, next) => {
   res
     .status(201)
     .json({ message: "success fully get subcategories", data: data });
+};
+
+exports.getCategoryDetailsById = async (req, res, next) => {
+  try {
+    console.log(req.params.id, "id");
+    const categoryId = req.params.categoryId;
+    const categoryDetails = await Category.Category.findById(
+      categoryId
+    ).populate("subCategories");
+    console.log(categoryDetails, "categorydetails");
+
+    if (!categoryDetails) {
+      return res.status(404).json({ error: "category not found" });
+    }
+
+    res.status(201).json({
+      message: "successfully get SubCategory Details",
+      data: categoryDetails,
+    });
+  } catch (error) {
+    res.status(400).json({ message: "error fetching category detail" });
+  }
+};
+
+exports.getSubCategoryDetailsById = async (req, res, next) => {
+  try {
+    console.log(req.params.id, "id");
+    const subCategoryId = req.params.subCategoryId;
+    const subCategoryDetails = await Category.SubCategory.findById(
+      subCategoryId
+    );
+    console.log(subCategoryDetails, "subCategorydetails");
+
+    if (!subCategoryDetails) {
+      return res.status(404).json({ error: "SubCategory not found" });
+    }
+
+    res.status(201).json({
+      message: "successfully get SubCategory Details",
+      data: subCategoryDetails,
+    });
+  } catch (error) {
+    res.status(400).json({ message: "error fetching subCategory detail" });
+  }
 };
