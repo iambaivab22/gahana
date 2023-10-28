@@ -43,10 +43,13 @@ const productSchema = new mongoose.Schema({
   //   type: String,
   //   required: [true, "Please enter product description"],
   // },
-  // ratings: {
-  //   type: Number,
-  //   default: 0,
-  // },
+  ratings: {
+    type: Number,
+    default: 0,
+  },
+  review: {
+    type: String,
+  },
   // images: [
   //   {
   //     public_id: {

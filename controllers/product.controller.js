@@ -7,40 +7,114 @@ cloudinary.config({
   api_secret: "KNvSA3_VXBB7zwSgMCR8QUM1BOM",
 });
 
-exports.createProduct = async (req, res, next) => {
+// exports.createProduct = async (req, res, next) => {
+//   try {
+//     // const uploader = async (path) => await cloudinary.uploads(path, "Images");
+//     const urls = [];
+//     let videoUrl;
+//     console.log(req.files.video[0], "req files video");
+//     try {
+//       req?.files?.image?.map(async (item, index) => {
+//         const { path } = item;
 
+//         const newPath = await cloudinary.uploader.upload(
+//           path,
+//           // { public_id: "" },
+//           { resource_type: "auto" },
+//           function (error, result) {
+//             if (result) {
+//               console.log(result, "results");
+//               urls.push({ url: result.secure_url });
+//             }
+//           }
+//         );
+//       });
+//     } catch (error) {
+//       res.status(500).json({
+//         error: "Error Creating products while uploading to cloudinary",
+//       });
+//     }
+
+//     const oldPath = await cloudinary.uploader.upload(
+//       req?.files?.video.path,
+//       // { public_id: "" },
+//       { resource_type: "auto" },
+//       function (error, result) {
+//         if (result) {
+//           console.log("video result", result);
+//           videoUrl = result.secure_url;
+//         }
+//       }
+//     );
+
+//     const newProduct = new Product({
+//       name: req.body.name,
+//       price: req.body.price,
+//       image: urls,
+//       video: videoUrl,
+//       originalPrice: req.body.originalPrice,
+//       discountedPrice: req.body.discountedPrice,
+//       category: req.body.category,
+//       subCategory: req.body.subCategory,
+//       discountPercentage: req.body.discountPercentage,
+//       details: req.body.details,
+//     });
+
+//     // res.json({ success: "success" });
+
+//     newProduct.save().then((prod) => {
+//       console.log(prod, "production");
+//       res.json(prod);
+//     });
+//   } catch (error) {
+//     return next(error);
+//   }
+// };
+
+exports.createProduct = async (req, res, next) => {
   try {
-    // const uploader = async (path) => await cloudinary.uploads(path, "Images");
     const urls = [];
     let videoUrl;
-console.log(req.files.video[0],"req files video");
 
-    req?.files?.image.map(async (item, index) => {
-      const { path } = item;
-
-      const newPath = await cloudinary.uploader.upload(
-        path,
-        // { public_id: "" },
-        { resource_type: "auto" },
-        function (error, result) {
+    // Upload images
+    if (req?.files?.image && req.files.image.length > 0) {
+      const imageUploadPromises = req.files.image.map(async (item) => {
+        const { path } = item;
+        try {
+          const result = await cloudinary.uploader.upload(path, {
+            resource_type: "auto",
+          });
           if (result) {
-            console.log(result, "results");
+            console.log(result, "Image upload result");
             urls.push({ url: result.secure_url });
           }
+        } catch (error) {
+          console.error("Image upload error:", error);
+          throw new Error("Error uploading images to Cloudinary");
         }
-      );
-    });
+      });
 
-    const oldPath = await cloudinary.uploader.upload(
-      req?.files?.video[0].path,
-      // { public_id: "" },
-      { resource_type: "auto" },
-      function (error, result) {
-        if (result) {
-          videoUrl = result.secure_url;
+      await Promise.all(imageUploadPromises);
+    }
+
+    // Upload video
+    if (req?.files?.video && req.files.video.length > 0) {
+      try {
+        const videoResult = await cloudinary.uploader.upload(
+          req.files.video[0].path,
+          {
+            resource_type: "auto",
+          }
+        );
+        if (videoResult) {
+          console.log("Video upload result", videoResult);
+          videoUrl = videoResult.secure_url;
         }
+      } catch (error) {
+        console.error("Video upload error:", error);
+        throw new Error("Error uploading video to Cloudinary");
       }
-    );
+    }
 
     const newProduct = new Product({
       name: req.body.name,
@@ -53,16 +127,18 @@ console.log(req.files.video[0],"req files video");
       subCategory: req.body.subCategory,
       discountPercentage: req.body.discountPercentage,
       details: req.body.details,
+      rating: req.body.rating,
+      review: req.body.review,
     });
-
-    // res.json({ success: "success" });
 
     newProduct.save().then((prod) => {
       console.log(prod, "production");
       res.json(prod);
     });
   } catch (error) {
-    return next(error);
+    return res.status(500).json({
+      error: error.message,
+    });
   }
 };
 
