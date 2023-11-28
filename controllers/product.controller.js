@@ -76,8 +76,15 @@ exports.createProduct = async (req, res, next) => {
     const urls = [];
     let videoUrl;
 
+    console.log(req.files?.image, "imagesss hai ta");
+
     // Upload images
     if (req?.files?.image && req.files.image.length > 0) {
+      console.log(
+        req?.files?.image,
+        "image listtttttttttttttttttttttttttttttttt"
+      );
+
       const imageUploadPromises = req.files.image.map(async (item) => {
         const { path } = item;
         try {
@@ -85,7 +92,8 @@ exports.createProduct = async (req, res, next) => {
             resource_type: "auto",
           });
           if (result) {
-            console.log(result, "Image upload result");
+            console.clear();
+            console.log(result, "+++++++++++++++++++===");
             urls.push({ url: result.secure_url });
           }
         } catch (error) {
@@ -143,12 +151,17 @@ exports.createProduct = async (req, res, next) => {
 };
 
 exports.getAllProduct = async (req, res, next) => {
-  const { search, sort, minPrice, maxPrice } = req.query;
+  const { search, sort, minPrice, maxPrice, categoryId } = req.query;
   try {
     let query = {};
     // Search products by name if a search query is provided
     if (search) {
       query.name = { $regex: search, $options: "i" };
+    }
+
+    if (categoryId !== undefined && categoryId !== "") {
+      // console.log(categoryId, "++++++++");
+      query.category = categoryId;
     }
     if (minPrice && maxPrice) {
       query.price = { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) };

@@ -8,6 +8,7 @@ const authRouter = require("./routes/authRoutes");
 const productRouter = require("./routes/product.routes");
 const CategoryRouter = require("./routes/categoryRoutes");
 const bannerRouter = require("./routes/bannerRoutes");
+const cartRouter = require("./routes/cartRoutes");
 
 dotenv.config({ path: "./config/config.env" });
 console.log(process.env.PORT, "port number");
@@ -21,9 +22,10 @@ app.use("/api/user", authRouter);
 app.use("/api", productRouter);
 app.use("/api", CategoryRouter);
 app.use("/api", bannerRouter);
+app.use("/api", cartRouter);
 
 app.use("/", (req, res) => {
-  res.send("hello world");
+  // res.send("hello world");
 });
 app.listen(process.env.PORT, () => {
   console.log(

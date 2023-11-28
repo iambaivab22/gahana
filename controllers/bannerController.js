@@ -3,8 +3,6 @@ const cloudinary = require("cloudinary").v2;
 
 exports.createBanner = async (req, res, next) => {
   try {
-    console.log(req.files.image, "file path");
-
     // const uploader = async (path) => await cloudinary.uploads(path, "Images");
     const urls = [];
     let videoUrl;

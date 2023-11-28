@@ -28,6 +28,7 @@ const productSchema = new mongoose.Schema({
 
   video: {
     type: String,
+    required: false,
   },
 
   originalPrice: {
