@@ -137,6 +137,8 @@ exports.createProduct = async (req, res, next) => {
       details: req.body.details,
       rating: req.body.rating,
       review: req.body.review,
+      isNewArrivals: req.body.isNewArrivals,
+      isBestSelling: req.body.isBestSelling,
     });
 
     newProduct.save().then((prod) => {
@@ -151,13 +153,32 @@ exports.createProduct = async (req, res, next) => {
 };
 
 exports.getAllProduct = async (req, res, next) => {
-  const { search, sort, minPrice, maxPrice, categoryId } = req.query;
+  const {
+    search,
+    sort,
+    minPrice,
+    maxPrice,
+    categoryId,
+    isNewArrivals,
+    isBestSelling,
+  } = req.query;
   try {
     let query = {};
     // Search products by name if a search query is provided
     if (search) {
       query.name = { $regex: search, $options: "i" };
     }
+
+    // if (isNewArrivals !== undefined) {
+    //   query.isNewArrivals = isNewArrivals === "true";
+
+    //   console.log(query, "query");
+    // }
+
+    // // Check if isBestSelling filter is provided
+    // if (isBestSelling !== undefined) {
+    //   query.isBestSelling = isBestSelling === "true";
+    // }
 
     if (categoryId !== undefined && categoryId !== "") {
       // console.log(categoryId, "++++++++");
@@ -183,6 +204,8 @@ exports.getAllProduct = async (req, res, next) => {
       .populate("category")
       .populate("subCategory")
       .sort(sortOption);
+
+    console.log(products, "products");
 
     res
       .status(201)
@@ -325,6 +348,8 @@ exports.updateProduct = async (req, res, next) => {
         subCategory: req.body.subCategory,
         discountPercentage: req.body.discountPercentage,
         details: req.body.details,
+        isNewArrivals: req.body.isNewArrivals,
+        isBestSelling: req.body.isBestSelling,
       },
       {
         new: true,

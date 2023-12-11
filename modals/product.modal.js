@@ -26,6 +26,16 @@ const productSchema = new mongoose.Schema({
     ],
   },
 
+  isBestSelling: {
+    type: Boolean,
+    required: false,
+  },
+
+  isNewArrivals: {
+    type: Boolean,
+    required: false,
+  },
+
   video: {
     type: String,
     required: false,
