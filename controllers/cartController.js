@@ -43,15 +43,25 @@ exports.getUsersCartByUserId = async (req, res) => {
 
 exports.updateCartProduct = async (req, res) => {
   try {
-    const updatedUser = await Cart.findOneAndUpdate(
-      { userId: req.params.userId },
-      req.body,
-      { new: true }
-    );
-    if (!updatedUser) {
-      res.status(404).json({ message: "User not found" });
+    const { productId, userId } = req.body;
+
+    console.log(productId, userId, "productId and user id");
+
+    const cart = await Cart.findOne({ userId: userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: "User not found" });
     } else {
-      res.json(updatedUser);
+      if (cart.products.find((item) => item.productId == productId)) {
+        console.log("it does exist");
+        item.quantity = req.quantity;
+        item.price = req.price;
+        const updatedQuantityAndPrice = await cart.save();
+        res.status(201).json({
+          data: updatedQuantityAndPrice,
+          message: "Successfully updated product cart",
+        });
+      }
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
