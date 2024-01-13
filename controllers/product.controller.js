@@ -134,7 +134,7 @@ exports.createProduct = async (req, res, next) => {
       category: req.body.category,
       subCategory: req.body.subCategory,
       discountPercentage: req.body.discountPercentage,
-      details: req.body.details,
+      description: req.body.description,
       rating: req.body.rating,
       review: req.body.review,
       isNewArrivals: req.body.isNewArrivals,

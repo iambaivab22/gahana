@@ -16,6 +16,8 @@ console.log(process.env.PORT, "port number");
 dbconnection();
 app.use(cors());
 
+app.use(express.static("uploads"));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/api/user", authRouter);

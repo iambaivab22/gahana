@@ -1,3 +1,4 @@
+const multer = require("multer");
 const {
   createBanner,
   getAllBanner,
@@ -5,15 +6,30 @@ const {
   deleteBanner,
 } = require("../controllers/bannerController");
 const express = require("express");
-const upload = require("../handlers/multer.handler");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+const cpUpload = upload.array("bannerImage", 12);
+
+// upload.array("photos", 12);
 
 const router = express.Router();
 
-const cpUpload = upload.fields([{ name: "image", maxCount: 3 }]);
+// const cpUpload = upload.fields([{ name: "image", maxCount: 3 }]);
+// const cpUpload = cpUpload.single("bannerImage");
 
 router.post("/banner/new", cpUpload, createBanner);
 router.get("/banner", getAllBanner);
-router.patch("/banner/:bannerId", cpUpload, updateBanner);
-router.delete("/banner/:bannerId", deleteBanner);
+// router.patch("/banner/:bannerId", cpUpload, updateBanner);
+// router.delete("/banner/:bannerId", deleteBanner);
 
 module.exports = router;
