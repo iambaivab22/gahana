@@ -15,15 +15,30 @@ const productSchema = new mongoose.Schema({
   price: {
     type: Number,
   },
-  image: {
-    // data: Buffer,
-    // contentType: String,
-    type: [
-      {
-        id: Types.ObjectId,
-        url: String,
-      },
-    ],
+
+  // colorVariants: [
+  //   {
+  //     colorName: String,
+  //     coloredImage: {
+  //       type: [String],
+  //       required: true,
+  //     },
+  //   },
+  // ],
+  // image: {
+  //   // data: Buffer,
+  //   // contentType: String,
+  //   type: [
+  //     {
+  //       id: Types.ObjectId,
+  //       url: String,
+  //     },
+  //   ],
+  // },
+
+  stockQuantity: {
+    type: Number,
+    required: true,
   },
 
   isBestSelling: {
@@ -54,25 +69,9 @@ const productSchema = new mongoose.Schema({
   //   type: String,
   //   required: [true, "Please enter product description"],
   // },
-  ratings: {
-    type: Number,
-    default: 0,
-  },
-  review: {
-    type: String,
-  },
-  // images: [
-  //   {
-  //     public_id: {
-  //       type: String,
-  //       required: true,
-  //     },
-  //     url: {
-  //       type: String,
-  //       required: true,
-  //     },
-  //   },
-  // ],
+
+  images: [{ type: mongoose.Schema.Types.ObjectId, ref: "ProductImage" }],
+
   // category: {
   //   type: String,
   //   required: [true, "please select category for this product"],
@@ -132,6 +131,14 @@ const productSchema = new mongoose.Schema({
   },
 });
 
+const productImageSchema = new mongoose.Schema({
+  colorName: String,
+  coloredImage: {
+    type: [String],
+    required: true,
+  },
+});
+
 productSchema.set("toJSON", {
   transform: function (doc, ret) {
     // Map the '_id' field to 'id'
@@ -140,4 +147,11 @@ productSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Product", productSchema);
+
+const ProductImage = mongoose.model("ProductImage", productImageSchema);
+
+module.exports = {
+  Product,
+  ProductImage,
+};

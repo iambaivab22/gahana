@@ -14,7 +14,7 @@ const Banner = require("../modals/banner.modal");
 
 exports.createBanner = async (req, res, next) => {
   try {
-    console.log("hitted", req.files);
+    console.log("hitted banner", req.files);
 
     let banner = await Banner.findOne();
 
@@ -26,11 +26,15 @@ exports.createBanner = async (req, res, next) => {
     // Get image filenames from the uploaded files
     const fileNames = req.files.map((file) => file.filename);
 
+    console.log(fileNames, "fileNames hai ta");
+
     // Add image filenames to the banner's bannerImages array
     banner.bannerImage = [...(banner.bannerImage || []), ...fileNames];
 
     // Save the banner
     const datas = await banner.save();
+
+    console.log(datas, "from banner");
 
     // const fileNames = req.files.map((file) => file.filename);
 

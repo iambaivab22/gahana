@@ -1,134 +1,18 @@
-const Product = require("../modals/product.modal");
-const cloudinary = require("cloudinary").v2;
-
-cloudinary.config({
-  cloud_name: "domtfu3ua",
-  api_key: "551591611862363",
-  api_secret: "KNvSA3_VXBB7zwSgMCR8QUM1BOM",
-});
-
-// exports.createProduct = async (req, res, next) => {
-//   try {
-//     // const uploader = async (path) => await cloudinary.uploads(path, "Images");
-//     const urls = [];
-//     let videoUrl;
-//     console.log(req.files.video[0], "req files video");
-//     try {
-//       req?.files?.image?.map(async (item, index) => {
-//         const { path } = item;
-
-//         const newPath = await cloudinary.uploader.upload(
-//           path,
-//           // { public_id: "" },
-//           { resource_type: "auto" },
-//           function (error, result) {
-//             if (result) {
-//               console.log(result, "results");
-//               urls.push({ url: result.secure_url });
-//             }
-//           }
-//         );
-//       });
-//     } catch (error) {
-//       res.status(500).json({
-//         error: "Error Creating products while uploading to cloudinary",
-//       });
-//     }
-
-//     const oldPath = await cloudinary.uploader.upload(
-//       req?.files?.video.path,
-//       // { public_id: "" },
-//       { resource_type: "auto" },
-//       function (error, result) {
-//         if (result) {
-//           console.log("video result", result);
-//           videoUrl = result.secure_url;
-//         }
-//       }
-//     );
-
-//     const newProduct = new Product({
-//       name: req.body.name,
-//       price: req.body.price,
-//       image: urls,
-//       video: videoUrl,
-//       originalPrice: req.body.originalPrice,
-//       discountedPrice: req.body.discountedPrice,
-//       category: req.body.category,
-//       subCategory: req.body.subCategory,
-//       discountPercentage: req.body.discountPercentage,
-//       details: req.body.details,
-//     });
-
-//     // res.json({ success: "success" });
-
-//     newProduct.save().then((prod) => {
-//       console.log(prod, "production");
-//       res.json(prod);
-//     });
-//   } catch (error) {
-//     return next(error);
-//   }
-// };
+const { Product, ProductImage } = require("../modals/product.modal");
 
 exports.createProduct = async (req, res, next) => {
   try {
     const urls = [];
     let videoUrl;
 
-    console.log(req.files?.image, "imagesss hai ta");
-
-    // Upload images
-    if (req?.files?.image && req.files.image.length > 0) {
-      console.log(
-        req?.files?.image,
-        "image listtttttttttttttttttttttttttttttttt"
-      );
-
-      const imageUploadPromises = req.files.image.map(async (item) => {
-        const { path } = item;
-        try {
-          const result = await cloudinary.uploader.upload(path, {
-            resource_type: "auto",
-          });
-          if (result) {
-            console.clear();
-            console.log(result, "+++++++++++++++++++===");
-            urls.push({ url: result.secure_url });
-          }
-        } catch (error) {
-          console.error("Image upload error:", error);
-          throw new Error("Error uploading images to Cloudinary");
-        }
-      });
-
-      await Promise.all(imageUploadPromises);
-    }
-
-    // Upload video
-    if (req?.files?.video && req.files.video.length > 0) {
-      try {
-        const videoResult = await cloudinary.uploader.upload(
-          req.files.video[0].path,
-          {
-            resource_type: "auto",
-          }
-        );
-        if (videoResult) {
-          console.log("Video upload result", videoResult);
-          videoUrl = videoResult.secure_url;
-        }
-      } catch (error) {
-        console.error("Video upload error:", error);
-        throw new Error("Error uploading video to Cloudinary");
-      }
-    }
-
+    const imagesfile = req.files.map((file) => file.filename);
+    console.log(req.files, "coloredImage");
     const newProduct = new Product({
       name: req.body.name,
       price: req.body.price,
-      image: urls,
-      video: videoUrl,
+      stockQuantity: req.body.stockQuantity,
+      images: req.body.productVariants,
+      video: req.files[0].filename,
       originalPrice: req.body.originalPrice,
       discountedPrice: req.body.discountedPrice,
       category: req.body.category,
@@ -203,9 +87,10 @@ exports.getAllProduct = async (req, res, next) => {
     const products = await Product.find(query)
       .populate("category")
       .populate("subCategory")
+      .populate("images")
       .sort(sortOption);
 
-    console.log(products, "products");
+    // console.log(products, "products");
 
     res
       .status(201)
@@ -370,6 +255,7 @@ exports.getProductDetailsById = async (req, res, next) => {
     const productId = req.params.productId;
     const productDetails = await Product.findById(productId)
       .populate("category")
+      .populate("images")
       .populate("subCategory");
 
     console.log(productDetails, "productdetails");
@@ -409,4 +295,85 @@ exports.productListByCategory = async (req, res, next) => {
   } catch (error) {
     console.log(error, "error");
   }
+};
+
+exports.CreateProductImage = async (req, res, next) => {
+  console.log("hitted prodcut images", req.files);
+
+  const remappedImages = req?.files?.map((file) => file.filename);
+  console.log(remappedImages, "remappedImages hai ta");
+  try {
+    const ProductImages = new ProductImage({
+      colorName: req.body.colorName,
+      coloredImage: remappedImages,
+    });
+
+    // Save the banner
+
+    const datas = await ProductImages.save();
+    console.log(datas, "datas");
+    res.status(201).json({
+      message: "successfully created productImage",
+      data: datas,
+    });
+  } catch (error) {}
+};
+
+exports.deleteProductColorVariantImages = async (req, res, next) => {
+  console.log(req.params, "req.params");
+  // const { productId, imroageId } = req.params;
+  const { variantId, imageId } = req.params;
+  console.log(variantId, imageId, "id hai ta ");
+
+  try {
+    // Find the product by ID
+
+    const productvariantImage = await ProductImage.findOne({ _id: variantId });
+    console.log(productvariantImage, "product found");
+
+    if (!productvariantImage) {
+      return res.status(404).json({ error: "Product color variant not found" });
+    }
+
+    // Find the image within the product's images array by its ID
+    const imageIndex = productvariantImage.coloredImage.findIndex(
+      (img) => img == imageId
+    );
+    console.log(imageIndex, "imageindex");
+
+    if (imageIndex === -1) {
+      return res
+        .status(404)
+        .json({ error: "Image variant not found in the product" });
+    }
+
+    // Remove the image from the product's images array
+    const deletedImage = productvariantImage?.coloredImage.splice(
+      imageIndex,
+      1
+    )[0];
+
+    // Save the modified product to update the images array in the database
+    await productvariantImage.save();
+
+    // Delete the image from Cloudinary using its public ID
+    // await cloudinary.uploader.destroy(deletedImage._id);
+
+    res.json({ message: "variant Image deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting image from Cloudinary:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+exports.getAllProductVariantImages = async (req, res, next) => {
+  // const count = req.params.count;
+
+  // myArray.slice(-3);
+  const data = await ProductImage.find();
+
+  const lastdata = data.slice(-req.params.count);
+  res
+    .status(201)
+    .json({ message: "success fully get Product color Variant", data: data });
 };
