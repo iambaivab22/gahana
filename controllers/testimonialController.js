@@ -71,3 +71,23 @@ exports.deleteTestimonial = async (req, res, next) => {
     console.log("error", error);
   }
 };
+
+exports.getTestimonialDetailsById = async (req, res, next) => {
+  try {
+    console.log(req.params.testimonialId, "id");
+    const testimonialId = req.params.testimonialId;
+    const tesimonialDetails = await Testimonial.findById(testimonialId);
+    // console.log(subCategoryDetails, "subCategorydetails");
+
+    if (!tesimonialDetails) {
+      return res.status(404).json({ error: "testimonial not found" });
+    }
+
+    res.status(201).json({
+      message: "successfully get testimonial Details",
+      data: tesimonialDetails,
+    });
+  } catch (error) {
+    res.status(400).json({ message: "error fetching subCategory detail" });
+  }
+};
