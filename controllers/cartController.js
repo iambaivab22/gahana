@@ -25,11 +25,18 @@ exports.createCart = async (req, res) => {
 
 exports.getUsersCartByUserId = async (req, res) => {
   try {
-    const cart = await Cart.find({ userId: req.params.userId });
+    const cart = await Cart.find({ userId: req.params.userId })
+      // .populate({
+      //   path: "products.productId",
+      // })
+      // .populate("products.productId.images");
 
-    // .populate({
-    //   path: "products.productId",
-    // });
+      .populate({
+        path: "products.productId",
+        populate: {
+          path: "images",
+        },
+      });
 
     if (!cart) {
       res.status(404).json({ message: "User not found" });
@@ -70,8 +77,8 @@ exports.updateCartProduct = async (req, res) => {
 
 exports.deleteCart = async (req, res) => {
   try {
-    const { productId } = re;
-    q.body;
+    const { productId } = req.body;
+
     const cart = await Cart.findOne({ userId: req.params.userId });
     if (!cart) {
       return res.status(404).json({ message: "User not found" });
@@ -88,14 +95,23 @@ exports.deleteCart = async (req, res) => {
 
 exports.deleteProductFromCart = async (req, res) => {
   try {
-    const { productId, userId } = req.body;
+    const { productId } = req.params;
+    const { userId } = req.body;
+    console.log("delete cart");
+
     const cart = await Cart.findOne({ userId: userId });
+    console.log("cart", cart);
     if (!cart) {
       return res.status(404).json({ message: "User not found" });
     } else {
+      // console.clear();
+
+      console.log(cart.products, "cart products");
       const productIndex = cart.products.findIndex(
-        (product) => product.productId.toString() === productId.toString()
+        (product) => product?._id.toString() === productId
       );
+
+      console.log(productIndex, "product Index");
 
       if (productIndex !== -1) {
         // Remove the product from the products array

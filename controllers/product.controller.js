@@ -23,6 +23,8 @@ exports.createProduct = async (req, res, next) => {
       review: req.body.review,
       isNewArrivals: req.body.isNewArrivals,
       isBestSelling: req.body.isBestSelling,
+      isWatchAndShop: req.body.isWatchAndShop,
+      stockQuantity: req.body.stockQuantity,
     });
 
     newProduct.save().then((prod) => {

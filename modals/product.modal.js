@@ -55,6 +55,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  isWatchAndShop: {
+    type: Boolean,
+    required: false,
+  },
 
   originalPrice: {
     type: Number,

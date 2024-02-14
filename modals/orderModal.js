@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const productSchema = require("./product.modal");
 
-const cartProductSchema = new mongoose.Schema({
+const OrderProductSchema = new mongoose.Schema({
   userId: String,
   products: [
     {
@@ -9,13 +8,15 @@ const cartProductSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
       },
-
       quantity: Number,
       price: Number,
     },
   ],
+
+  isInsideValley: Boolean,
+  OrderedAt: String,
 });
 
 // const cartSchema = new mongoose.Schema({});
 
-module.exports = mongoose.model("Cart", cartProductSchema);
+module.exports = mongoose.model("Orders", OrderProductSchema);

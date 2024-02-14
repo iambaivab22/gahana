@@ -8,9 +8,9 @@ const {
 } = require("../controllers/cartController");
 
 const router = express.Router();
-router.post("/cart/new", createCart);
+router.post("/cart/new/:userId", createCart);
 router.get("/cart/:userId", getUsersCartByUserId);
 router.patch("/cart/:productId", updateCartProduct);
-router.delete("/cart", deleteProductFromCart);
+router.delete("/cart/:productId", deleteProductFromCart);
 
 module.exports = router;
