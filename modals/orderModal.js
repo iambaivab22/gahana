@@ -12,9 +12,9 @@ const OrderProductSchema = new mongoose.Schema({
       price: Number,
     },
   ],
-
   isInsideValley: Boolean,
   OrderedAt: String,
+  shippingLocation: String,
 });
 
 // const cartSchema = new mongoose.Schema({});

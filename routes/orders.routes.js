@@ -8,7 +8,7 @@ const {
 
 const router = express.Router();
 router.post("/order/new/:userId", createOrder);
-// router.get("/order/:userId", getUsersCartByUserId);
+router.get("/order", getOrderedProductList);
 router.patch("/order/:userId", updateOrderedProduct);
 router.delete("/order/:userId", deleteSpecificCartOrder);
 
