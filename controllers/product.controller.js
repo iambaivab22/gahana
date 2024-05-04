@@ -72,11 +72,15 @@ exports.getAllProduct = async (req, res, next) => {
       query.category = categoryId;
     }
     if (minPrice && maxPrice) {
-      query.price = { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) };
+      console.log(minPrice, maxPrice, "minmax");
+      query.discountedPrice = {
+        $gte: parseInt(minPrice),
+        $lte: parseInt(maxPrice),
+      };
     } else if (minPrice) {
-      query.price = { $gte: parseInt(minPrice) };
+      query.discountedPrice = { $gte: parseInt(minPrice) };
     } else if (maxPrice) {
-      query.price = { $lte: parseInt(maxPrice) };
+      query.discountedPrice = { $lte: parseInt(maxPrice) };
     }
 
     // Sort products by price if a sort query is provided
