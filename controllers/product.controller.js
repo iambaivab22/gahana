@@ -42,6 +42,7 @@ exports.getAllProduct = async (req, res, next) => {
   const {
     search,
     sort,
+    order,
     minPrice,
     maxPrice,
     categoryId,
@@ -80,11 +81,17 @@ exports.getAllProduct = async (req, res, next) => {
 
     // Sort products by price if a sort query is provided
     let sortOption = {};
-    if (sort === "asc") {
-      sortOption.price = 1;
-    } else if (sort === "desc") {
-      sortOption.price = -1;
+    if (order === "asc" && sort === "price") {
+      sortOption.originalPrice = 1;
+    } else if (order === "desc" && sort === "price") {
+      sortOption.originalPrice = -1;
+    } else if (order === "asc" && sort === "name") {
+      sortOption.name = 1;
+    } else if (order === "desc" && sort === "name") {
+      sortOption.name = -1;
     }
+
+    console.log(sortOption, "sortOption");
 
     const products = await Product.find(query)
       .populate("category")
@@ -92,7 +99,7 @@ exports.getAllProduct = async (req, res, next) => {
       .populate("images")
       .sort(sortOption);
 
-    // console.log(products, "products");
+    console.log(products, "products");
 
     res
       .status(201)
