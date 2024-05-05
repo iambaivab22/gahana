@@ -46,6 +46,7 @@ exports.getAllProduct = async (req, res, next) => {
     minPrice,
     maxPrice,
     categoryId,
+    subCategoryId,
     isNewArrivals,
     isBestSelling,
   } = req.query;
@@ -56,20 +57,12 @@ exports.getAllProduct = async (req, res, next) => {
       query.name = { $regex: search, $options: "i" };
     }
 
-    // if (isNewArrivals !== undefined) {
-    //   query.isNewArrivals = isNewArrivals === "true";
-
-    //   console.log(query, "query");
-    // }
-
-    // // Check if isBestSelling filter is provided
-    // if (isBestSelling !== undefined) {
-    //   query.isBestSelling = isBestSelling === "true";
-    // }
-
     if (categoryId !== undefined && categoryId !== "") {
-      // console.log(categoryId, "++++++++");
       query.category = categoryId;
+    }
+
+    if (subCategoryId !== undefined && subCategoryId !== "") {
+      query.subCategory = subCategoryId;
     }
     if (minPrice && maxPrice) {
       console.log(minPrice, maxPrice, "minmax");
