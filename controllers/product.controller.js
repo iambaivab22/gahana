@@ -121,7 +121,6 @@ exports.deleteProduct = async (req, res, next) => {
     const deleteProductData = await Product.findByIdAndRemove(
       req.params.productId
     );
-
     // console.log(deleteProductData, "deleteproduct data");
 
     res.status(201).json({
