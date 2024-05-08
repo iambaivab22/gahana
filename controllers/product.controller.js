@@ -51,10 +51,20 @@ exports.getAllProduct = async (req, res, next) => {
     isBestSelling,
   } = req.query;
   try {
+    console.log(isBestSelling, "isBest Selling");
     let query = {};
     // Search products by name if a search query is provided
     if (search) {
       query.name = { $regex: search, $options: "i" };
+    }
+
+    if (isBestSelling) {
+      console.log(isBestSelling, "isBestSelling");
+      query.isBestSelling = isBestSelling;
+    }
+    if (isNewArrivals) {
+      console.log(isNewArrivals, "is New arrivals");
+      query.isNewArrivals = isNewArrivals;
     }
 
     if (categoryId !== undefined && categoryId !== "") {
