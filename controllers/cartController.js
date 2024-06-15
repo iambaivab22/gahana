@@ -50,9 +50,7 @@ exports.getUsersCartByUserId = async (req, res) => {
 
 exports.updateCartProduct = async (req, res) => {
   try {
-    const { productId, userId } = req.body;
-
-    console.log(productId, userId, "productId and user id");
+    const { productId, userId, quantity, price } = req.body;
 
     const cart = await Cart.findOne({ userId: userId });
 
@@ -60,7 +58,6 @@ exports.updateCartProduct = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     } else {
       if (cart.products.find((item) => item.productId == productId)) {
-        console.log("it does exist");
         item.quantity = req.quantity;
         item.price = req.price;
         const updatedQuantityAndPrice = await cart.save();
@@ -78,6 +75,7 @@ exports.updateCartProduct = async (req, res) => {
 exports.deleteCart = async (req, res) => {
   try {
     const { productId } = req.body;
+    console.log(productId, "pid");
 
     const cart = await Cart.findOne({ userId: req.params.userId });
     if (!cart) {
@@ -94,10 +92,11 @@ exports.deleteCart = async (req, res) => {
 };
 
 exports.deleteProductFromCart = async (req, res) => {
+  console.log("delete product from cart");
   try {
     const { productId } = req.params;
     const { userId } = req.body;
-    console.log("delete cart");
+    console.log("delete cart", productId, userId);
 
     const cart = await Cart.findOne({ userId: userId });
     console.log("cart", cart);
@@ -110,8 +109,6 @@ exports.deleteProductFromCart = async (req, res) => {
       const productIndex = cart.products.findIndex(
         (product) => product?._id.toString() === productId
       );
-
-      console.log(productIndex, "product Index");
 
       if (productIndex !== -1) {
         // Remove the product from the products array

@@ -106,8 +106,6 @@ exports.getAllProduct = async (req, res, next) => {
       .populate("images")
       .sort(sortOption);
 
-    console.log(products, "products");
-
     res
       .status(201)
       .json({ message: "success fully get products", data: products });
@@ -272,8 +270,6 @@ exports.getProductDetailsById = async (req, res, next) => {
       .populate("category")
       .populate("images")
       .populate("subCategory");
-
-    console.log(productDetails, "productdetails");
 
     if (!productDetails) {
       return res.status(404).json({ error: "Product not found" });

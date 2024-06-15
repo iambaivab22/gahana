@@ -28,9 +28,11 @@ exports.registerUser = async (req, res) => {
     const user = new User({ email, password: hashedPassword });
     await user.save();
 
-    res
-      .status(201)
-      .json({ data: user, message: "User registered successfully." });
+    res.status(201).json({
+      data: user,
+      userRoles: userRole,
+      message: "User registered successfully.",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Registration failed." });
@@ -46,13 +48,24 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    console.log(email, password, "email and password");
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid email or password." });
     }
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-    res.json({ token, user: user });
+    let userRoles = "";
+
+    if (email === "meromail123@gmail.com" && password === "123456783") {
+      console.log("admin");
+      userRoles = "ADMIN";
+    } else {
+      userRoles = "USER";
+      console.log("non admin");
+    }
+
+    console.log("userRoles", userRoles, "role");
+
+    res.json({ token, user: user, userRoles: userRoles });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Login failed." });
