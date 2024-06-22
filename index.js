@@ -51,6 +51,14 @@ app.get("/", (req, res) => {
   res.send({ data: "hello", res: "boys" });
 });
 
+app.get("/products", (req, res) => {
+  res.send([
+    { data: "hello", res: "boys" },
+    { data: "hello1", res: "boys1" },
+    { data: "hello2", res: "boys2" },
+  ]);
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
