@@ -57,9 +57,9 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.get("/data", (req, res) => {
-  res.send("hello data");
-});
+// app.get("/data", (req, res) => {
+//   res.send("hello data");
+// });
 
 // Start the server
 app.listen(PORT, () => {
