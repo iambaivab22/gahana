@@ -56,6 +56,9 @@ app.get("/products", (req, res) => {
     { data: "hello", res: "boys" },
     { data: "hello1", res: "boys1" },
     { data: "hello2", res: "boys2" },
+    { data: "hello", res: "boys" },
+    { data: "hello1", res: "boys1" },
+    { data: "hello2", res: "boys2" },
   ]);
 });
 
