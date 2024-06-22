@@ -3,7 +3,7 @@ const User = require("../modals/userModal");
 const express = require("express");
 const router = express.Router();
 
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 // Register
@@ -23,9 +23,9 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists." });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({ email, password: hashedPassword });
+    const user = new User({ email, password: password });
     await user.save();
 
     res.status(201).json({
@@ -48,10 +48,10 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid email or password." });
-    }
+    // const isPasswordValid = await bcrypt.compare(password, user.password);
+    // if (!isPasswordValid) {
+    //   return res.status(401).json({ message: "Invalid email or password." });
+    // }
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
     let userRoles = "";
 
