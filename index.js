@@ -48,10 +48,7 @@ const PORT = process.env.PORT || 3000;
 
 // Define a route for the root URL ("/")
 app.get("/", (req, res) => {
-  res.send({
-    data: "hello",
-    value: "guys",
-  });
+  res.send("hello world");
 });
 
 app.listen(PORT, () => {
