@@ -52,7 +52,10 @@ const PORT = process.env.PORT || 3000;
 
 // Define a route for the root URL ("/")
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send({
+    data: "hello",
+    value: "guys",
+  });
 });
 
 // Start the server
