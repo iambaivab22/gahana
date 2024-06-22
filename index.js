@@ -1,10 +1,10 @@
-const express = require("express");
-const app = express();
+// const express = require("express");
+// const app = express();
 // const cors = require("cors");
 // const dotenv = require("dotenv");
 // const bodyParser = require("body-parser");
 // const dbconnection = require("./config/connection");
-// // const authRouter = require("./routes/authRoutes");
+// const authRouter = require("./routes/authRoutes");
 // const productRouter = require("./routes/product.routes");
 // const CategoryRouter = require("./routes/categoryRoutes");
 // const bannerRouter = require("./routes/bannerRoutes");
@@ -16,8 +16,6 @@ const app = express();
 // dotenv.config({ path: "./config/config.env" });
 // console.log(process.env.PORT, "port number");
 
-// const PORT = 3000;
-
 // dbconnection();
 // app.use(cors());
 
@@ -25,7 +23,7 @@ const app = express();
 
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
-// // app.use("/api/user", authRouter);
+// app.use("/api/user", authRouter);
 // app.use("/api", productRouter);
 // app.use("/api", CategoryRouter);
 // app.use("/api", bannerRouter);
@@ -43,25 +41,21 @@ const app = express();
 //   );
 // });
 
+// Import the express module
+const express = require("express");
+
+// Create an instance of express
+const app = express();
+
 // Define the port number
 const PORT = process.env.PORT || 3000;
 
 // Define a route for the root URL ("/")
 app.get("/", (req, res) => {
-  res.send({ data: "hello", res: "boys" });
+  res.send("Hello World");
 });
 
-app.get("/products", (req, res) => {
-  res.send([
-    { data: "hello", res: "boys" },
-    { data: "hello1", res: "boys1" },
-    { data: "hello2", res: "boys2" },
-    { data: "hello", res: "boys" },
-    { data: "hello1", res: "boys1" },
-    { data: "hello2", res: "boys2" },
-  ]);
-});
-
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
