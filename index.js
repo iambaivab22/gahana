@@ -43,25 +43,36 @@
 //   );
 // });
 
-// Import the express module
+// app.js
 const express = require("express");
-
-// Create an instance of express
 const app = express();
+const port = 3000;
 
-// Define the port number
-const PORT = process.env.PORT || 3000;
+// Middleware to parse JSON bodies
+app.use(express.json());
 
-// Define a route for the root URL ("/")
-app.get("/", (req, res) => {
-  res.send("Hello World");
+// Simple in-memory data store (replace with a database in real applications)
+let data = [
+  { id: 1, name: "John Doe" },
+  { id: 2, name: "Jane Smith" },
+];
+
+// GET route to fetch all data
+app.get("/data", (req, res) => {
+  res.json(data);
 });
 
-// app.get("/data", (req, res) => {
-//   res.send("hello data");
-// });
+// POST route to add new data
+app.post("/data", (req, res) => {
+  const newData = {
+    id: data.length + 1,
+    name: req.body.name, // Assuming the request body contains a 'name' field
+  };
+  data.push(newData);
+  res.status(201).json(newData);
+});
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
